@@ -1,0 +1,28 @@
+# Declare global variables to avoid R CMD check NOTEs
+utils::globalVariables(c(
+  "xmin",
+  "xmax",
+  "ymin",
+  "ymax",
+  "Type",
+  "Indel",
+  "freq",
+  "x_pos",
+  "cl",
+  "Figlabel",
+  "IndelType",
+  "label",
+  "value",
+  "x",
+  "y",
+  "count",
+  "labels",
+  "ref2alt",
+  "minus1bs",
+  "minus2bs",
+  "plus1bs",
+  "plus2bs",
+  "strand",
+  "region",
+  "mut_type"
+))

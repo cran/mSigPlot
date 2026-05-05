@@ -1,0 +1,237 @@
+#' @rdname bar_plots
+#'
+#' @examples
+#' set.seed(1)
+#' sig <- runif(192)
+#' sig <- sig / sum(sig)
+#' names(sig) <- catalog_row_order()$SBS192
+#' plot_SBS12(sig, plot_title = "Example SBS12 strand bias")
+#'
+#' @export
+#'
+#' @import ggplot2
+#' @importFrom stats binom.test p.adjust
+plot_SBS12 <- function(
+  catalog,
+  plot_title = NULL,
+  abundance = NULL,
+  show_axis_text_x = TRUE,
+  show_axis_text_y = TRUE,
+  show_axis_title_x = FALSE,
+  show_axis_title_y = TRUE,
+  ylim = NULL,
+  base_size = 11,
+  plot_title_cex = 1.0,
+  title_outside_plot = FALSE,
+  axis_text_x_cex = 0.5,
+  axis_title_x_cex = 0.8,
+  axis_title_y_cex = 0.8,
+  axis_text_y_cex = 0.7,
+  grid = FALSE
+) {
+  catalog <- normalize_catalog(catalog, 192, catalog_row_order()$SBS192, "SBS192")
+  if (is.null(catalog)) return(NULL)
+  if (is.null(plot_title)) plot_title <- colnames(catalog)[1] %||% ""
+
+  base_mm <- base_mm(base_size)
+
+  strand_col <- c("#394398", "#e83020")
+  maj_class_names <- c("C>A", "C>G", "C>T", "T>A", "T>C", "T>G")
+
+  # Reorder catalog for paired strand display
+  reorder <- reorder_SBS192_for_plotting()
+  cat_reordered <- catalog[reorder, 1]
+
+  # Detect catalog type
+  catalog_type <- detect_y_axis_type(catalog[, 1], attributes(catalog)$y_axis_type_attr)
+
+  # Collapse 192 bars into 12 (6 classes x 2 strands)
+  # In the reordered data: odd = transcribed, even = untranscribed
+  # Each class has 32 bars (16 pairs)
+  counts_strand <- numeric(12)
+  for (i in 1:6) {
+    offset <- 32 * (i - 1)
+    counts_strand[2 * i - 1] <-
+      sum(cat_reordered[seq(offset + 1, offset + 32, by = 2)])
+    counts_strand[2 * i] <-
+      sum(cat_reordered[seq(offset + 2, offset + 32, by = 2)])
+  }
+
+  if (catalog_type == "muts_per_million") {
+    counts_strand <- counts_strand * 1e6
+    ylabel <- "Muts/Million"
+    ymax <- max(counts_strand) * 1.3
+  } else if (catalog_type == "counts") {
+    ymax <- 4 * ceiling(max(max(counts_strand) * 1.3, 10) / 4)
+    ylabel <- "Counts"
+  } else {
+    ylabel <- ifelse(catalog_type == "proportion",
+                     "Proportion", "Density Proportion")
+    ymax <- min(max(counts_strand) * 1.3, 1)
+  }
+
+  if (!is.null(ylim)) {
+    ymax <- ylim[2]
+  }
+  ymin <- min(0, min(counts_strand))
+
+  # Build data frame: 12 bars (6 pairs)
+  df <- data.frame(
+    class = rep(maj_class_names, each = 2),
+    strand = rep(c("Transcribed", "Untranscribed"), 6),
+    value = counts_strand,
+    x = 1:12,
+    stringsAsFactors = FALSE
+  )
+  df$class <- factor(df$class, levels = maj_class_names)
+
+  bar_colors <- rep(strand_col, 6)
+
+  # Binomial test for strand bias
+  strand_bias <- NULL
+  asterisks <- rep("", 6)
+
+  if (catalog_type == "counts" && !is.null(abundance) && length(abundance) == 64) {
+    # Calculate base counts from 3-mer abundance
+    # Sum abundance by middle base
+    nms <- names(abundance)
+    mid <- substr(nms, 2, 2)
+    base_counts <- tapply(abundance, mid, sum)
+
+    # Proportion of pyrimidines on transcribed strand
+    prop_C <- base_counts["G"] / (base_counts["C"] + base_counts["G"])
+    prop_T <- base_counts["A"] / (base_counts["T"] + base_counts["A"])
+    props <- c(rep(prop_C, 3), rep(prop_T, 3))
+    names(props) <- maj_class_names
+
+    # Binomial tests
+    mat <- matrix(counts_strand, nrow = 2, ncol = 6)
+    colnames(mat) <- maj_class_names
+    rownames(mat) <- c("transcribed", "untranscribed")
+
+    p_values <- numeric(6)
+    names(p_values) <- maj_class_names
+    for (type in maj_class_names) {
+      htest <- stats::binom.test(x = mat[, type], p = props[type],
+                                 alternative = "two.sided")
+      p_values[type] <- htest$p.value
+    }
+
+    q_values <- stats::p.adjust(p_values, method = "BH")
+    strand_bias <- as.data.frame(t(mat))
+    strand_bias$q.values <- q_values
+
+    # Assign asterisks
+    for (k in 1:6) {
+      q <- q_values[k]
+      if (q < 0.001) {
+        asterisks[k] <- "***"
+      } else if (q < 0.01) {
+        asterisks[k] <- "**"
+      } else if (q < 0.05) {
+        asterisks[k] <- "*"
+      }
+    }
+  }
+
+  # Build plot
+  p <- ggplot(df, aes(x = x, y = value)) +
+    geom_bar(stat = "identity", fill = bar_colors, width = 0.7) +
+    scale_x_continuous(
+      breaks = seq(1.5, 11.5, by = 2),
+      labels = maj_class_names,
+      limits = c(0, 13),
+      expand = c(0, 0)
+    ) +
+    scale_y_continuous(
+      limits = c(min(0, ymin * 1.05), ymax),
+      expand = c(0, 0),
+      oob = scales::oob_keep,
+      labels = if (ylabel == "Counts") {
+        scales::label_number(accuracy = 1)
+      } else {
+        ggplot2::waiver()
+      }
+    ) +
+    coord_cartesian(
+      ylim = c(min(-ymax * 0.05, ymin * 1.05), ymax * 1.15),
+      clip = "off"
+    ) +
+    theme_classic(base_size = base_size) +
+    theme(
+      axis.title.y = element_text(size = axis_title_y_cex * base_size),
+      axis.text.y = element_text(size = axis_text_y_cex * base_size),
+      axis.text.x = element_text(size = axis_text_x_cex * base_size),
+      plot.margin = margin(t = 20, r = 10, b = 10, l = 10)
+    )
+
+  if (show_axis_title_y) {
+    p <- p + ylab(ylabel)
+  } else {
+    p <- p + ylab(NULL)
+  }
+  if (!show_axis_text_y) {
+    p <- p + theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+  }
+  if (show_axis_title_x) {
+    p <- p + xlab("Mutation Type")
+  } else {
+    p <- p + xlab(NULL)
+  }
+
+  # Grid lines
+  if (grid) {
+    y_breaks <- seq(0, ymax, ymax / 4)
+    p <- p +
+      geom_hline(yintercept = y_breaks, color = "grey35", linewidth = 0.25)
+  }
+
+  # Add asterisks for significant strand bias
+  for (k in 1:6) {
+    if (asterisks[k] != "") {
+      pair_x <- c(2 * k - 1, 2 * k)
+      pair_max <- max(df$value[pair_x])
+      seg_y <- pair_max + ymax * 0.03
+      star_y <- seg_y + ymax * 0.025
+
+      p <- p +
+        annotate("segment",
+                 x = pair_x[1], xend = pair_x[2],
+                 y = seg_y, yend = seg_y) +
+        annotate("text",
+                 x = mean(pair_x), y = star_y,
+                 label = asterisks[k],
+                 size = base_mm)
+    }
+  }
+
+  # Sample name
+  p <- add_plot_title(p, plot_title, title_outside_plot,
+                      plot_title_cex, base_size, ymax, x = 0.5)
+
+  # Legend
+  p <- p +
+    annotate("rect", xmin = 7, xmax = 7.5,
+             ymin = ymax * 0.92, ymax = ymax * 0.97,
+             fill = strand_col[1]) +
+    annotate("rect", xmin = 7, xmax = 7.5,
+             ymin = ymax * 0.84, ymax = ymax * 0.89,
+             fill = strand_col[2]) +
+    annotate("text", x = 7.7, y = ymax * 0.945,
+             label = "Transcribed strand", hjust = 0,
+             size = plot_title_cex * base_mm * 0.8) +
+    annotate("text", x = 7.7, y = ymax * 0.865,
+             label = "Untranscribed strand", hjust = 0,
+             size = plot_title_cex * base_mm * 0.8)
+
+  # Attach strand bias statistics as attribute if computed
+  if (!is.null(strand_bias)) {
+    attr(p, "strand.bias.statistics") <- strand_bias
+  }
+
+  if (!show_axis_text_x) {
+    p <- p + theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+  }
+
+  return(p)
+}
