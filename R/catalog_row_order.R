@@ -2,7 +2,7 @@
 #'
 #' Returns a named list containing the canonical row ordering for each
 #' catalog type. These are used for validation and ordering of mutation
-#' catalogs. The result is cached after the first call.
+#' catalogs.
 #'
 #' Row names use a compact 4-letter format for SBS types: e.g. `ACAA`
 #' encodes the trinucleotide context as
@@ -10,12 +10,6 @@
 #'  SBS288 row names add a strand prefix:
 #' `T:ACAA` (transcribed), `U:ACAA` (untranscribed), `N:ACAA`
 #' (non-transcribed).
-#'
-#' Catalogs with "stapled" row names (e.g. `A[C>A]A` for SBS96,
-#' `T:A[C>A]A` for SBS288) are automatically converted to compact format
-#' by [normalize_catalog()] before validation, so both formats are
-#' accepted by all SBS plotting functions. (Only SBS functions
-#' use stapled row names.)
 #'
 #' @return A named list with elements: SBS96, SBS192, SBS288, SBS1536, DBS78,
 #'   DBS136, DBS144, ID (83-category COSMIC indels), ID166, ID89, ID476.
@@ -27,15 +21,6 @@
 #'
 #' @export
 catalog_row_order <- function() {
-  if (!is.null(.pkg_cache$row_orders)) {
-    return(.pkg_cache$row_orders)
-  }
-  result <- .build_row_orders()
-  .pkg_cache$row_orders <- result
-  result
-}
-
-.build_row_orders <- function() {
   sbs96 <- c(
     "ACAA",
     "ACCA",
@@ -2506,7 +2491,7 @@ catalog_row_order <- function() {
       "[Del(C):R(4,5)]A",
       "[Del(C):R(4,5)]T",
       "[Del(C):R(1,5)]G",
-      "Del(C):R(6,9)",
+      "Del(C):R(6,)",
       "A[Del(T):R(1,4)]A",
       "A[Del(T):R(1,4)]C",
       "A[Del(T):R(1,4)]G",
@@ -2588,7 +2573,7 @@ catalog_row_order <- function() {
       "Complex"
     ),
 
-    ID476 = type_476_indel_type()$IndelType
+    ID476 = catalog_and_label_order_476()$IndelType
   )
 }
 

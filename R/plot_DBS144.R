@@ -19,7 +19,9 @@
 #'
 #' @param catalog Numeric vector, single-column data.frame, matrix, tibble,
 #'   or data.table. If there are row names (or for a vector, names), they
-#'   will be checked against [catalog_row_order()].
+#'   will be checked against [catalog_row_order()]. SBS functions also accept
+#'   "stapled" row names (e.g. `A[C>A]A` for SBS96, `T:A[C>A]A` for SBS288),
+#'   which are automatically converted to compact format before validation.
 #' @param plot_title Character. Title displayed above the plot.
 #' @param filename Character. Path to the output PDF file (`_pdf` functions only).
 #' @param grid Logical, draw horizontal grid lines at `seq(0, ymax, ymax/4)`
@@ -28,7 +30,10 @@
 #'   via `...`).
 #' @param upper Logical, draw colored class rectangles and labels above bars
 #'   (not available in `plot_DBS144`, `plot_SBS12`, `plot_SBS288`).
-#' @param ylim Optional y-axis limits.
+#' @param ylim Optional y-axis limits. Either `NULL` (auto) or a
+#'   length-2 numeric vector `c(ymin, ymax)`, following ggplot2's
+#'   `scale_y_continuous(limits = ...)` convention. A scalar is rejected
+#'   with an error.
 #' @param base_size Numeric. Base font size in points.
 #' @param plot_title_cex Numeric. Multiplier for the plot title size.
 #' @param title_outside_plot Logical. If FALSE, the title is
@@ -117,6 +122,7 @@ plot_DBS144 <- function(
   axis_text_y_cex = 0.7,
   grid = FALSE
 ) {
+  check_ylim(ylim)
   catalog <- normalize_catalog(
     catalog,
     144,

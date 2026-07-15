@@ -311,7 +311,9 @@ plot_SBS96_pdf(catalog, filename, ...)
 \arguments{
 \item{catalog}{Numeric vector, single-column data.frame, matrix, tibble,
 or data.table. If there are row names (or for a vector, names), they
-will be checked against \code{\link[=catalog_row_order]{catalog_row_order()}}.}
+will be checked against \code{\link[=catalog_row_order]{catalog_row_order()}}. SBS functions also accept
+"stapled" row names (e.g. \verb{A[C>A]A} for SBS96, \verb{T:A[C>A]A} for SBS288),
+which are automatically converted to compact format before validation.}
 
 \item{plot_title}{Character. Title displayed above the plot.}
 
@@ -323,7 +325,10 @@ will be checked against \code{\link[=catalog_row_order]{catalog_row_order()}}.}
 
 \item{show_axis_title_y}{Logical. If FALSE, hide the y-axis title.}
 
-\item{ylim}{Optional y-axis limits.}
+\item{ylim}{Optional y-axis limits. Either \code{NULL} (auto) or a
+length-2 numeric vector \code{c(ymin, ymax)}, following ggplot2's
+\code{scale_y_continuous(limits = ...)} convention. A scalar is rejected
+with an error.}
 
 \item{base_size}{Numeric. Base font size in points.}
 

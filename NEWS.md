@@ -1,3 +1,24 @@
+# mSigPlot 2.0.41
+
+* Added error check for scalar and non-numeric values of argument ylim for 
+  plot_ID* functions. Implemented in file check_ylim.R.
+* Added tests of same.
+
+# mSigPlot 2.0.40
+
+* Updated row names for 476-type plots. Renamed R/type_476_indel_type.R 
+  to R/catalog_and_label_order_476.R and the internal function type_476_indel_type()
+  to catalog_and_label_order_476(). Updated callers and docs.
+
+# mSigPlot 2.0.39
+
+* Moved stapled row name documentation from `catalog_row_order()` to the
+  `@param catalog` description shared by all bar plot functions, where it
+  is more relevant.
+* For ID89, changed "Del(C):R(6,9)", to "Del(C):R(6,)" for the standard 
+  rownames (catalog_row_order) and patched normalize_catalog.R so that it
+  will accept either to avoid breaking calls with older data.
+
 # mSigPlot 2.0.38
 
 * Removed single-quotes around SBS and DBS in `DESCRIPTION` per CRAN
