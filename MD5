@@ -1,6 +1,6 @@
-014ea37d89637043c6b278d4a54e910c *DESCRIPTION
-c6ebda12370ec01df0b5ef7a9fa6382c *NAMESPACE
-81e9b2f8b090856b79cbc8fe79502d50 *NEWS.md
+97fa67d68eb70ad2ee40852096dd23fa *DESCRIPTION
+d90f4c8c926a51d29d178bebb1e2ae00 *NAMESPACE
+92a1797b1e9a9d2066c6934bb4841ab2 *NEWS.md
 1aa789e636ddefca92c1647bc406eaad *R/catalog_and_label_order_476.R
 c3f3ea697236d6452911b5165cd3dc8f *R/catalog_row_order.R
 fff8aa5a823cf315761cb79859422348 *R/globals.R
@@ -8,11 +8,11 @@ bbfe3b68883ba295f12edc0d168e0502 *R/id89_figlabels.R
 dce61ad16cf4e9aa1947f7630822e045 *R/normalize_catalog.R
 724a7a291ac47edc589db0e0fec69c75 *R/plot_DBS136.R
 2424e95b9f027323389b90f7d618ab2a *R/plot_DBS136_pdf.R
-55825e50a62da9ce624bc30f84d5d7e3 *R/plot_DBS144.R
+fd508f9ac46e104936b2ce1c18eec34c *R/plot_DBS144.R
 3b87a92fb10ec92d396dcdf16cdb751a *R/plot_DBS144_pdf.R
 f72a36f407669decf0cbd2dee9744fb5 *R/plot_DBS78.R
-7a5957df20f9f81430eefd1999158882 *R/plot_DBS78_pdf.R
-fbdf563b11767c98ea5a6a1ccac4ba4f *R/plot_ID166.R
+87f18886f913601eca00c1869e981efb *R/plot_DBS78_pdf.R
+3cc91fbd51db1b79a3b998d32145b185 *R/plot_ID166.R
 babf483738e875b24d1160e19d59ac05 *R/plot_ID166_pdf.R
 97b1db45a0b27ceefe8702020d0366d4 *R/plot_ID476.R
 66bdb0e71ac6513f5a0cac4dd12de35f *R/plot_ID476_pdf.R
@@ -20,7 +20,7 @@ babf483738e875b24d1160e19d59ac05 *R/plot_ID166_pdf.R
 1240b204051f0f0eb9c60a5cc2f8fac9 *R/plot_ID476_right_pdf.R
 83700588cb6b47572a53edd2d9cfa2b5 *R/plot_ID83.R
 2fe9bc96b53157f435b966520577e3f5 *R/plot_ID83_pdf.R
-9431dbecd443e515d458761211ac4804 *R/plot_ID89.R
+dfc147b1de75fbf80ce6e34e38631ee8 *R/plot_ID89.R
 681ecc3dd2ca43b13ed6883253198bf6 *R/plot_ID89_pdf.R
 50f969a7be24af3f45a7169642dbe3e8 *R/plot_SBS12.R
 76c4ca1516a3c6e1ffac5857aa5bde84 *R/plot_SBS12_pdf.R
@@ -40,7 +40,7 @@ c092c707b57f88a2feec96b062ddd87f *R/unstaple_SBS96_rownames.R
 c72f1a8f1d7019cf5aa9e8d4bd56d4cc *build/vignette.rds
 960a01182cfbe96ac74683dfe2ff5995 *inst/doc/mSigPlot.R
 d8ed69dfd9cee8b4379cf7d30790716e *inst/doc/mSigPlot.Rmd
-10ea33d11ed4eaeda8b7e4af509b2f1a *inst/doc/mSigPlot.html
+3d3a2ab129d4348975ec6a8107317d13 *inst/doc/mSigPlot.html
 8b96ce56fec811d86862bde963058993 *inst/extdata/SBS288_De-Novo_Signatures.txt
 1c3883e3a90164bfb4b0baca4daa7941 *inst/extdata/dbs78_example.csv
 054629788ae37c22562143888ad3e34b *inst/extdata/id83_cosmic_v3.5.tsv
@@ -53,7 +53,7 @@ a49b68b22540fd083e9ece9cd55c21fb *inst/extdata/type476_liu_et_al_sigs.tsv
 16a13801d1cf56494f76d95859d183f8 *inst/extdata/type89_liu_et_al_sigs.tsv
 bccc8323bf5785d3c30d78cdcc706bcd *man/add_peak_labels.Rd
 0c2c8ca6df45354c1107188c996ff168 *man/add_plot_title.Rd
-e81c74d497894110a1c8a6e39c9281aa *man/bar_plots.Rd
+afdae0eec4b5f5e69343c1598e8a361b *man/bar_plots.Rd
 00e55017bded2e566d33c1fa346a9986 *man/base_mm.Rd
 f0515a4480d302ae5d7508a4ccbcf2a4 *man/catalog_and_label_order_476.Rd
 78ebb5191ea5218c2c17d7b30c5fa9f5 *man/catalog_row_order.Rd
@@ -94,8 +94,8 @@ bb3a05c77e95a33579571ae989146c97 *tests/testthat/fixtures/reference_hashes/plot_
 b8c1f5430e06dcb0cba7b674f9eec7eb *tests/testthat/fixtures/reference_hashes/plot_ID476.hash
 1e48e718602e5a43f1d65fc25df219e7 *tests/testthat/fixtures/reference_hashes/plot_ID476_right.hash
 19b737a81c21096f86bf29406aee1afc *tests/testthat/fixtures/reference_hashes/plot_ID83.hash
-8814a0d9ec4bae2faa61d00f10c9d320 *tests/testthat/fixtures/reference_hashes/plot_ID89.hash
-b36f5bc3974fe9bb825a15d94829824a *tests/testthat/fixtures/reference_hashes/plot_ID89_peaks.hash
+b4b11a4a69d81608bc0d8257f505e701 *tests/testthat/fixtures/reference_hashes/plot_ID89.hash
+f4ea9111678b880ea716019fc5da1775 *tests/testthat/fixtures/reference_hashes/plot_ID89_peaks.hash
 3c5428f26a9e1df61a0224412fd68255 *tests/testthat/fixtures/reference_hashes/plot_SBS12.hash
 e9f601c040d3dda92d51c5c78a82d224 *tests/testthat/fixtures/reference_hashes/plot_SBS192.hash
 3b682408b034c12c69d93d62bae5625f *tests/testthat/fixtures/reference_hashes/plot_SBS96.hash
@@ -122,6 +122,4 @@ b55aeb000b9232c101c17b6fec5d43a8 *tests/testthat/test-plot_89.R
 906895544d578a845a1b61bd959614c6 *tests/testthat/test-regression-plots.R
 dbc6afaa8165f7b4e782992b1175b533 *tests/testthat/test-stapled-rownames.R
 3d28196111f5de6a371ffd10e7b86b17 *tests/testthat/test-ylim-validation.R
-58908838d193b93ae7dfa94ddf24b954 *tests/testthat/tests/visual/new/plot_ID89.png
-6a7b5862df7c78ff23710338cafd8785 *tests/testthat/tests/visual/new/plot_ID89_peaks.png
 d8ed69dfd9cee8b4379cf7d30790716e *vignettes/mSigPlot.Rmd
